@@ -14,6 +14,7 @@ from ._warps import swirl, resize, rotate, rescale, downscale_local_mean
 from .pyramids import (pyramid_reduce, pyramid_expand,
                        pyramid_gaussian, pyramid_laplacian)
 from .seam_carving import seam_carve
+from .stroke_width_transform import swt
 
 
 __all__ = ['hough_circle',
@@ -40,6 +41,7 @@ __all__ = ['hough_circle',
            'PolynomialTransform',
            'PiecewiseAffineTransform',
            'swirl',
+           'swt',
            'resize',
            'rotate',
            'rescale',
