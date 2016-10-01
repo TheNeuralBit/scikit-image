@@ -39,7 +39,9 @@ def swt(img, dark_on_light=True):
     xsobel = ndi.sobel(image_gray, axis=1)
     ysobel = ndi.sobel(image_gray, axis=0)
 
+    widths = np.full(image_edge.shape, np.iinfo(np.uint8).max, np.uint8)
     output = np.full(image_edge.shape, np.iinfo(np.uint8).max, np.uint8)
+    rays = []
 
     # iterate through every edge pixel and look for an opposing edge
     for y0, x0 in _iter_ones(image_edge):
@@ -48,7 +50,14 @@ def swt(img, dark_on_light=True):
             x1, y1 = result
             dist = _distance(x0, y0, x1, y1)
             for x, y in _line(x0, y0, x1, y1):
-                output[y][x] = min(output[y][x], dist)
+                widths[y][x] = min(widths[y][x], dist)
+            rays.append({'x0': x0, 'y0': y0, 'x1': x1, 'y1': y1})
+
+    for r in rays:
+       ray_values = [widths[y][x] for x, y in _line(r['x0'], r['y0'], r['x1'], r['y1'])]
+       median = np.median(np.array(ray_values))
+       for x, y in _line(r['x0'], r['y0'], r['x1'], r['y1']):
+           output[y][x] = median
 
     return output
 
